@@ -25,9 +25,9 @@ export async function signIn( req: Request, res: Response, next: NextFunction ) 
   try {
     const { email, password } = req.body as AuthLoginDto
 
-    const userMaybe = await authSrv.signIn( { email, password } )
+    const token = await authSrv.signIn( { email, password } )
 
-    http.ok( res, userMaybe, "login exitoso" )
+    http.ok( res, token, "login exitoso" )
   } catch ( error ) {
     next( error )
   }

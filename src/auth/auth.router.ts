@@ -5,12 +5,20 @@ import passport from "passport";
 
 export const routerAuth = Router();
 
-routerAuth.post( "/", registerValidationDto, registerAuth );
+routerAuth.post(
+  "/sign-out",
+  registerValidationDto,
+  registerAuth
+);
 
-routerAuth.post( "/sign-in", loginValidationDto, signIn );
+routerAuth.post(
+  "/sign-in",
+  loginValidationDto,
+  signIn
+);
 
 routerAuth.get(
   "/profile",
-  passport.authenticate( "jwt", { session: false } ),
+  [ passport.authenticate( "jwt", { session: false } ) ],
   viewProfile
 );

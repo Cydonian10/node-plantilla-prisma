@@ -3,6 +3,7 @@ import { AuthCreateDto, AuthLoginDto } from './auth.dto';
 import { jwtGenerate } from '../shared/utils/jwt';
 import { notFound } from "@hapi/boom";
 import { passwordHash } from '../shared/utils/passwordHash';
+import { compare, compareSync } from "bcrypt";
 
 export class AuthService {
 
@@ -34,7 +35,13 @@ export class AuthService {
 
     if ( !userMaybe ) throw notFound( `usuario no encontrado ${ data.email }` )
 
-    return userMaybe
+    const passwordValid = await compare( data.password, userMaybe.password )
+
+    if ( !passwordValid ) throw notFound( `usuario no encontrado ${ data.email }` )
+
+    const token = await jwtGenerate( userMaybe.id, userMaybe.rol )
+
+    return token
   }
 
   async viewProfile( id: string ) {
