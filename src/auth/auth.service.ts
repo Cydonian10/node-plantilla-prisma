@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { AuthCreateDto, AuthLoginDto } from './auth.dto';
 import { jwtGenerate } from '../shared/utils/jwt';
 import { notFound } from "@hapi/boom";
+import { genSaltSync, hashSync } from "bcrypt";
+import { passwordHash } from '../shared/utils/passwordHash';
 
 export class AuthService {
 
@@ -11,10 +13,12 @@ export class AuthService {
 
   async signOut( data: AuthCreateDto ) {
 
+    const newPassword = passwordHash( data.password )
+
     const authUser = await this.orm.user.create( {
       data: {
         email: data.email,
-        password: data.password
+        password: newPassword
       }
     } )
 
@@ -33,4 +37,6 @@ export class AuthService {
 
     return userMaybe
   }
+
+
 }
