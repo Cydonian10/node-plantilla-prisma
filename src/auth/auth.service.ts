@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { AuthCreateDto, AuthLoginDto } from './auth.dto';
 import { jwtGenerate } from '../shared/utils/jwt';
 import { notFound } from "@hapi/boom";
-import { genSaltSync, hashSync } from "bcrypt";
 import { passwordHash } from '../shared/utils/passwordHash';
 
 export class AuthService {
@@ -33,10 +32,21 @@ export class AuthService {
       where: { email: data.email }
     } )
 
-    if ( !userMaybe ) throw notFound( `usuario no encontrado ${ data.email }`, data.email )
+    if ( !userMaybe ) throw notFound( `usuario no encontrado ${ data.email }` )
 
     return userMaybe
   }
 
+  async viewProfile( id: string ) {
 
+    const userMaybe = await this.orm.user.findUnique( {
+      where: { id }
+    } )
+
+    if ( !userMaybe ) throw notFound( `usuario no encontrado ${ id }` )
+
+    return userMaybe
+
+  }
 }
+
